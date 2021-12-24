@@ -40,6 +40,7 @@ namespace ego_planner
 
     bspline_pub_ = nh.advertise<ego_planner::Bspline>("/planning/bspline", 10);
     data_disp_pub_ = nh.advertise<ego_planner::DataDisp>("/planning/data_display", 100);
+    pub_last_progress_time = nh.advertise<sensor_msgs::JointState>("last_progress_time",100);
 
     if (target_type_ == TARGET_TYPE::MANUAL_TARGET)
       waypoint_sub_ = nh.subscribe("/waypoint_generator/waypoints", 1, &EGOReplanFSM::waypointCallback, this);
@@ -504,7 +505,6 @@ namespace ego_planner
   void EGOReplanFSM::getLocalTarget()
   {
     double t;
-
     double t_step = planning_horizen_ / 20 / planner_manager_->pp_.max_vel_;
     double dist_min = 9999, dist_min_t = 0.0;
     for (t = planner_manager_->global_data_.last_progress_time_; t < planner_manager_->global_data_.global_duration_; t += t_step)
@@ -533,6 +533,10 @@ namespace ego_planner
         planner_manager_->global_data_.last_progress_time_ = dist_min_t;
         break;
       }
+      last_progress_time.header.stamp = ros::Time::now();
+      last_progress_time.position.resize(12);
+      last_progress_time.position[0] = planner_manager_->global_data_.last_progress_time_;
+      pub_last_progress_time.publish(last_progress_time);
     }
     if (t > planner_manager_->global_data_.global_duration_) // Last global point
     {
