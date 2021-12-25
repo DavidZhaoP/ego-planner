@@ -40,7 +40,7 @@ namespace ego_planner
 
     bspline_pub_ = nh.advertise<ego_planner::Bspline>("/planning/bspline", 10);
     data_disp_pub_ = nh.advertise<ego_planner::DataDisp>("/planning/data_display", 100);
-    pub_last_progress_time = nh.advertise<sensor_msgs::JointState>("last_progress_time",100);
+    pub_last_progress_time = nh.advertise<sensor_msgs::JointState>("/planning/last_progress_time",100);
 
     if (target_type_ == TARGET_TYPE::MANUAL_TARGET)
       waypoint_sub_ = nh.subscribe("/waypoint_generator/waypoints", 1, &EGOReplanFSM::waypointCallback, this);
@@ -201,7 +201,8 @@ namespace ego_planner
 
   void EGOReplanFSM::execFSMCallback(const ros::TimerEvent &e)
   {
-
+    // printf(“\033[1;33m Hello World. \033[0m \n”);
+    //printf("\033[1;33m Hello World \033[0m\n");
     static int fsm_num = 0;
     fsm_num++;
     if (fsm_num == 100)
@@ -377,6 +378,7 @@ namespace ego_planner
 
   void EGOReplanFSM::checkCollisionCallback(const ros::TimerEvent &e)
   {
+    //printf("\033[1;33m Hello World381 \033[0m\n");
     LocalTrajData *info = &planner_manager_->local_data_;
     auto map = planner_manager_->grid_map_;
 

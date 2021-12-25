@@ -160,6 +160,7 @@ getControl(const QuadrotorSimulator::Quadrotor& quad, const Command& cmd)
 static void
 cmd_callback(const quadrotor_msgs::SO3Command::ConstPtr& cmd)
 {
+  //printf("\033[1;33m Hello World163 \033[0m\n");
   command.force[0]         = cmd->force.x;
   command.force[1]         = cmd->force.y;
   command.force[2]         = cmd->force.z;
@@ -178,6 +179,14 @@ cmd_callback(const quadrotor_msgs::SO3Command::ConstPtr& cmd)
   command.corrections[2]   = cmd->aux.angle_corrections[1];
   command.current_yaw      = cmd->aux.current_yaw;
   command.use_external_yaw = cmd->aux.use_external_yaw;
+  // std::cout<<"cmd->force.x="<<cmd->force.x<<std::endl;
+  // std::cout<<"cmd->orientation.y="<<cmd->orientation.y<<std::endl;
+  // std::cout<<"cmd->kR[1]="<<cmd->kR[1]<<std::endl;
+  // std::cout<<"cmd->kOm[1]="<<cmd->kOm[1]<<std::endl;
+  // std::cout<<"cmd->aux.kf_correction="<<cmd->aux.kf_correction<<std::endl;
+  // std::cout<<"cmd->aux.angle_corrections[0]="<<cmd->aux.angle_corrections[0]<<std::endl;
+  // std::cout<<"cmd->aux.current_yaw="<<cmd->aux.current_yaw<<std::endl;
+  // std::cout<<"cmd->aux.use_external_yaw="<<cmd->aux.use_external_yaw<<std::endl;
 }
 
 static void

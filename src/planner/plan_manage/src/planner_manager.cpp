@@ -289,7 +289,7 @@ namespace ego_planner
   {
 
     // generate global reference trajectory
-
+    
     vector<Eigen::Vector3d> points;
     points.push_back(start_pos);
 
@@ -297,12 +297,24 @@ namespace ego_planner
     {
       points.push_back(waypoints[wp_i]);
     }
+    // for(int i =0; i < (int)points.size(); i++){
+    //   FILE* fp301 = fopen("/home/zp/catkin_ws/points.txt","a+");
+    // if(fp301){
+    //   fprintf(fp301,"points[%d].x=%f points[%d].y=%f points[%d].z=%f\n",i,points(i)(0),i,points(i)(1),i,points(i)(2));
+    //   fclose(fp301);
+    // }
+    // }
 
     double total_len = 0;
     total_len += (start_pos - waypoints[0]).norm();
     for (size_t i = 0; i < waypoints.size() - 1; i++)
     {
       total_len += (waypoints[i + 1] - waypoints[i]).norm();
+    }
+    FILE* fp307 = fopen("/home/zp/catkin_ws/totallenth.txt","a+");
+    if(fp307){
+      fprintf(fp307,"total_len=%f\n",total_len);
+      fclose(fp307);
     }
 
     // insert intermediate points if too far

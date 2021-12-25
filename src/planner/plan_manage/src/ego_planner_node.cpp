@@ -7,7 +7,7 @@ using namespace ego_planner;
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "ego_planner_node");
+  ros::init(argc, argv, "ego_planner_node");///map_generator/global_cloud,/grid_map/occupancy_inflate,occupancy_inflate
   ros::NodeHandle nh("~");
 
   EGOReplanFSM rebo_replan;
