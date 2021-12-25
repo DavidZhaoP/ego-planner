@@ -70,8 +70,16 @@ namespace ego_planner
 
     for (size_t i = 0; i < (size_t)waypoint_num_; i++)
     {
-      visualization_->displayGoalPoint(wps[i], Eigen::Vector4d(0, 0.5, 0.5, 1), 0.3, i);
+      if(i == 0)
+        visualization_->displayGoalPoint(wps[i], Eigen::Vector4d(0, 0.5, 0.5, 1), 0.3, i);
+      else if( i == 1)
+        visualization_->displayGoalPoint(wps[i], Eigen::Vector4d(220, 20, 60, 1), 0.3, i);
+      else if( i == 2)
+        visualization_->displayGoalPoint(wps[i], Eigen::Vector4d(0, 255, 0, 1), 0.3, i);
+      else
+        visualization_->displayGoalPoint(wps[i], Eigen::Vector4d(0, 0, 0, 1), 0.3, i);
       ros::Duration(0.001).sleep();
+      //ros::Duration(1).sleep();
     }
 
     if (success)
@@ -84,6 +92,8 @@ namespace ego_planner
       for (int i = 0; i < i_end; i++)
       {
         gloabl_traj[i] = planner_manager_->global_data_.global_traj_.evaluate(i * step_size_t);
+        visualization_->displayGoalPoint(gloabl_traj[i], Eigen::Vector4d(0, 0, 0, 1), 0.05, i);
+        ros::Duration(0.02).sleep();
       }
 
       end_vel_.setZero();
@@ -261,7 +271,6 @@ namespace ego_planner
       bool success = callReboundReplan(true, flag_random_poly_init);
       if (success)
       {
-
         changeFSMExecState(EXEC_TRAJ, "FSM");
         flag_escape_emergency_ = true;
       }
@@ -301,13 +310,16 @@ namespace ego_planner
       if (t_cur > info->duration_ - 1e-2)
       {
         have_target_ = false;
-
-        changeFSMExecState(WAIT_TARGET, "FSM");
-        return;
+        
+        //changeFSMExecState(WAIT_TARGET, "FSM");
+        planGlobalTrajbyGivenWps();
+        have_target_ = true;
+        //return;
       }
       else if ((end_pt_ - pos).norm() < no_replan_thresh_)
       {
         // cout << "near end" << endl;
+        //planGlobalTrajbyGivenWps();
         return;
       }
       else if ((info->start_pos_ - pos).norm() < replan_thresh_)
