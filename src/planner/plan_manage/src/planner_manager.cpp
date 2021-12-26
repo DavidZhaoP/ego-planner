@@ -50,7 +50,9 @@ namespace ego_planner
     cout.precision(3);
     cout << "start: " << start_pt.transpose() << ", " << start_vel.transpose() << "\ngoal:" << local_target_pt.transpose() << ", " << local_target_vel.transpose()
          << endl;
-
+    // printf("\033[1;33m start_pt(0)=%f \033[0m\n",start_pt(0));
+    // printf("\033[1;33m start_pt(1)=%f \033[0m\n",start_pt(1));
+    // printf("\033[1;33m start_pt(2)=%f \033[0m\n",start_pt(2));
     if ((start_pt - local_target_pt).norm() < 0.2)
     {
       cout << "Close to goal" << endl;
@@ -74,6 +76,7 @@ namespace ego_planner
 
       if (flag_first_call || flag_polyInit || flag_force_polynomial /*|| ( start_pt - local_target_pt ).norm() < 1.0*/) // Initial path generated from a min-snap traj by order.
       {
+        //printf("\033[1;33m Hello World79 \033[0m\n");
         flag_first_call = false;
         flag_force_polynomial = false;
 
@@ -131,9 +134,9 @@ namespace ego_planner
       }
       else // Initial path generated from previous trajectory.
       {
-
+        //printf("\033[1;33m Hello World136 \033[0m\n");
         double t;
-        double t_cur = (ros::Time::now() - local_data_.start_time_).toSec();
+        double t_cur = (ros::Time::now() - local_data_.start_time_).toSec();//在本cpp的268行附近，通过updateTrajInfo()函数更新local_data_
 
         vector<double> pseudo_arc_length;
         vector<Eigen::Vector3d> segment_point;
@@ -148,29 +151,29 @@ namespace ego_planner
         }
         t -= ts;
 
-        double poly_time = (local_data_.position_traj_.evaluateDeBoorT(t) - local_target_pt).norm() / pp_.max_vel_ * 2;
-        if (poly_time > ts)
-        {
-          PolynomialTraj gl_traj = PolynomialTraj::one_segment_traj_gen(local_data_.position_traj_.evaluateDeBoorT(t),
-                                                                        local_data_.velocity_traj_.evaluateDeBoorT(t),
-                                                                        local_data_.acceleration_traj_.evaluateDeBoorT(t),
-                                                                        local_target_pt, local_target_vel, Eigen::Vector3d::Zero(), poly_time);
+        // double poly_time = (local_data_.position_traj_.evaluateDeBoorT(t) - local_target_pt).norm() / pp_.max_vel_ * 2;
+        // if (poly_time > ts)
+        // {
+        //   PolynomialTraj gl_traj = PolynomialTraj::one_segment_traj_gen(local_data_.position_traj_.evaluateDeBoorT(t),
+        //                                                                 local_data_.velocity_traj_.evaluateDeBoorT(t),
+        //                                                                 local_data_.acceleration_traj_.evaluateDeBoorT(t),
+        //                                                                 local_target_pt, local_target_vel, Eigen::Vector3d::Zero(), poly_time);
 
-          for (t = ts; t < poly_time; t += ts)
-          {
-            if (!pseudo_arc_length.empty())
-            {
-              segment_point.push_back(gl_traj.evaluate(t));
-              pseudo_arc_length.push_back((segment_point.back() - segment_point[segment_point.size() - 2]).norm() + pseudo_arc_length.back());
-            }
-            else
-            {
-              ROS_ERROR("pseudo_arc_length is empty, return!");
-              continous_failures_count_++;
-              return false;
-            }
-          }
-        }
+        //   for (t = ts; t < poly_time; t += ts)
+        //   {
+        //     if (!pseudo_arc_length.empty())
+        //     {
+        //       segment_point.push_back(gl_traj.evaluate(t));
+        //       pseudo_arc_length.push_back((segment_point.back() - segment_point[segment_point.size() - 2]).norm() + pseudo_arc_length.back());
+        //     }
+        //     else
+        //     {
+        //       ROS_ERROR("pseudo_arc_length is empty, return!");
+        //       continous_failures_count_++;
+        //       return false;
+        //     }
+        //   }
+        // }
 
         double sample_length = 0;
         double cps_dist = pp_.ctrl_pt_dist * 1.5; // cps_dist will be divided by 1.5 in the next
@@ -311,11 +314,11 @@ namespace ego_planner
     {
       total_len += (waypoints[i + 1] - waypoints[i]).norm();
     }
-    FILE* fp307 = fopen("/home/zp/catkin_ws/totallenth.txt","a+");
-    if(fp307){
-      fprintf(fp307,"total_len=%f\n",total_len);
-      fclose(fp307);
-    }
+    // FILE* fp307 = fopen("/home/zp/catkin_ws/totallenth.txt","a+");
+    // if(fp307){
+    //   fprintf(fp307,"total_len=%f\n",total_len);
+    //   fclose(fp307);
+    // }
 
     // insert intermediate points if too far
     vector<Eigen::Vector3d> inter_points;

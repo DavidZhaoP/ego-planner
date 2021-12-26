@@ -40,7 +40,7 @@ namespace ego_planner
 
     bspline_pub_ = nh.advertise<ego_planner::Bspline>("/planning/bspline", 10);
     data_disp_pub_ = nh.advertise<ego_planner::DataDisp>("/planning/data_display", 100);
-    pub_last_progress_time = nh.advertise<sensor_msgs::JointState>("/planning/last_progress_time",100);
+    pub_last_progress_time = nh.advertise<sensor_msgs::JointState>("/planning/last_progress_time", 100);
 
     if (target_type_ == TARGET_TYPE::MANUAL_TARGET)
       waypoint_sub_ = nh.subscribe("/waypoint_generator/waypoints", 1, &EGOReplanFSM::waypointCallback, this);
@@ -70,11 +70,11 @@ namespace ego_planner
 
     for (size_t i = 0; i < (size_t)waypoint_num_; i++)
     {
-      if(i == 0)
+      if (i == 0)
         visualization_->displayGoalPoint(wps[i], Eigen::Vector4d(0, 0.5, 0.5, 1), 0.3, i);
-      else if( i == 1)
+      else if (i == 1)
         visualization_->displayGoalPoint(wps[i], Eigen::Vector4d(220, 20, 60, 1), 0.3, i);
-      else if( i == 2)
+      else if (i == 2)
         visualization_->displayGoalPoint(wps[i], Eigen::Vector4d(0, 255, 0, 1), 0.3, i);
       else
         visualization_->displayGoalPoint(wps[i], Eigen::Vector4d(0, 0, 0, 1), 0.3, i);
@@ -310,11 +310,11 @@ namespace ego_planner
       if (t_cur > info->duration_ - 1e-2)
       {
         have_target_ = false;
-        
+
         //changeFSMExecState(WAIT_TARGET, "FSM");
+        //return;
         planGlobalTrajbyGivenWps();
         have_target_ = true;
-        //return;
       }
       else if ((end_pt_ - pos).norm() < no_replan_thresh_)
       {
@@ -536,10 +536,22 @@ namespace ego_planner
         ROS_ERROR("last_progress_time_ ERROR !!!!!!!!!");
         return;
       }
+      FILE *fp539 = fopen("/home/zp/catkin_ws/dist_min1.txt", "a+");
       if (dist < dist_min)
       {
         dist_min = dist;
         dist_min_t = t;
+        if (fp539)
+        {
+          fprintf(fp539, "dist_min1=%f\n", dist_min);
+          fclose(fp539);
+        }
+      }
+      fp539 = fopen("/home/zp/catkin_ws/dist_min1.txt", "a+");
+      if (fp539)
+      {
+        fprintf(fp539, "dist_min=%f\n", dist_min);
+        fclose(fp539);
       }
       if (dist >= planning_horizen_)
       {

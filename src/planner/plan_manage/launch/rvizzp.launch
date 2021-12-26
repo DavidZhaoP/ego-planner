@@ -1,0 +1,3 @@
+<launch>
+  <node name="rvizzp" pkg="rviz" type="rviz" args="-d $(find ego_planner)/launch/nicezp.rviz" required="true" />
+</launch>
