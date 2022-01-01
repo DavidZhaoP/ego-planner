@@ -60,7 +60,6 @@ namespace ego_planner
         occ = grid_map_->getInflateOccupancy(a * init_points.col(i - 1) + (1 - a) * init_points.col(i));
         // cout << setprecision(5);
         // cout << (a * init_points.col(i-1) + (1-a) * init_points.col(i)).transpose() << " occ1=" << occ << endl;
-
         if (occ && !last_occ)
         {
           if (same_occ_state_times > ENOUGH_INTERVAL || i == order_)
@@ -165,12 +164,13 @@ namespace ego_planner
       //cout << "i = " << i << " first = " << segment_ids[i].first << " second = " << segment_ids[i].second << endl;
       if (num_points < minimum_points)
       {
+        printf("\033[1;33m Hello World168 \033[0m\n");
         double add_points_each_side = (int)(((minimum_points - num_points) + 1.0f) / 2);
 
         final_segment_ids[i].first = segment_ids[i].first - add_points_each_side >= bounds[i].first ? segment_ids[i].first - add_points_each_side : bounds[i].first;
 
         final_segment_ids[i].second = segment_ids[i].second + add_points_each_side <= bounds[i].second ? segment_ids[i].second + add_points_each_side : bounds[i].second;
-      }
+      }//从打印数据来看，这段在一般情况下几乎不起作用
       else
       {
         final_segment_ids[i].first = segment_ids[i].first;
@@ -220,7 +220,8 @@ namespace ego_planner
           }
         }
 
-        if (got_intersection_id >= 0)
+        // if (got_intersection_id >= 0)
+        if(true)
         {
           cps_.flag_temp[j] = true;
           double length = (intersection_point - cps_.points.col(j)).norm();
@@ -235,11 +236,15 @@ namespace ego_planner
                 if (occ)
                   a += grid_map_->getResolution();
                 cps_.base_point[j].push_back((a / length) * intersection_point + (1 - a / length) * cps_.points.col(j));
+                //base_point应该是在障碍物表面
                 cps_.direction[j].push_back((intersection_point - cps_.points.col(j)).normalized());
                 break;
               }
             }
           }
+        }
+        else{
+          std::cout<<"got_intersection_id<0?????!!!!!!!!!!!!!"<<std::endl;
         }
       }
 

@@ -151,32 +151,32 @@ namespace ego_planner
         }
         t -= ts;
 
-        // double poly_time = (local_data_.position_traj_.evaluateDeBoorT(t) - local_target_pt).norm() / pp_.max_vel_ * 2;
-        // if (poly_time > ts)
-        // {
-        //   PolynomialTraj gl_traj = PolynomialTraj::one_segment_traj_gen(local_data_.position_traj_.evaluateDeBoorT(t),
-        //                                                                 local_data_.velocity_traj_.evaluateDeBoorT(t),
-        //                                                                 local_data_.acceleration_traj_.evaluateDeBoorT(t),
-        //                                                                 local_target_pt, local_target_vel, Eigen::Vector3d::Zero(), poly_time);
+        double poly_time = (local_data_.position_traj_.evaluateDeBoorT(t) - local_target_pt).norm() / pp_.max_vel_ * 2;
+        if (poly_time > ts)
+        {
+          PolynomialTraj gl_traj = PolynomialTraj::one_segment_traj_gen(local_data_.position_traj_.evaluateDeBoorT(t),
+                                                                        local_data_.velocity_traj_.evaluateDeBoorT(t),
+                                                                        local_data_.acceleration_traj_.evaluateDeBoorT(t),
+                                                                        local_target_pt, local_target_vel, Eigen::Vector3d::Zero(), poly_time);
 
-        //   for (t = ts; t < poly_time; t += ts)
-        //   {
-        //     if (!pseudo_arc_length.empty())
-        //     {
-        //       segment_point.push_back(gl_traj.evaluate(t));
-        //       pseudo_arc_length.push_back((segment_point.back() - segment_point[segment_point.size() - 2]).norm() + pseudo_arc_length.back());
-        //     }
-        //     else
-        //     {
-        //       ROS_ERROR("pseudo_arc_length is empty, return!");
-        //       continous_failures_count_++;
-        //       return false;
-        //     }
-        //   }
-        // }
+          for (t = ts; t < poly_time; t += ts)
+          {
+            if (!pseudo_arc_length.empty())
+            {
+              segment_point.push_back(gl_traj.evaluate(t));
+              pseudo_arc_length.push_back((segment_point.back() - segment_point[segment_point.size() - 2]).norm() + pseudo_arc_length.back());
+            }
+            else
+            {
+              ROS_ERROR("pseudo_arc_length is empty, return!");
+              continous_failures_count_++;
+              return false;
+            }
+          }
+        }//这个if判断注释掉系统基本能正常工作。
 
         double sample_length = 0;
-        double cps_dist = pp_.ctrl_pt_dist * 1.5; // cps_dist will be divided by 1.5 in the next
+        double cps_dist = pp_.ctrl_pt_dist * 1.5; // cps_dist will be divided by 1.5 in the next，配置文件中ctrl_pt_dist = 0.4
         size_t id = 0;
         do
         {

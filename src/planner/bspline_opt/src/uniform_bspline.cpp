@@ -211,6 +211,7 @@ namespace ego_planner
   void UniformBspline::parameterizeToBspline(const double &ts, const vector<Eigen::Vector3d> &point_set,
                                              const vector<Eigen::Vector3d> &start_end_derivative,
                                              Eigen::MatrixXd &ctrl_pts)
+  //UniformBspline::parameterizeToBspline(ts, point_set, start_end_derivatives, ctrl_pts);                                             
   {
     if (ts <= 0)
     {
