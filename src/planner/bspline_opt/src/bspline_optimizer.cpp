@@ -220,8 +220,8 @@ namespace ego_planner
           }
         }
 
-        // if (got_intersection_id >= 0)
-        if(true)
+        if (got_intersection_id >= 0)
+        //if(true)
         {
           cps_.flag_temp[j] = true;
           double length = (intersection_point - cps_.points.col(j)).norm();
@@ -232,12 +232,14 @@ namespace ego_planner
               occ = grid_map_->getInflateOccupancy((a / length) * intersection_point + (1 - a / length) * cps_.points.col(j));
 
               if (occ || a < grid_map_->getResolution())
+              //if (occ)
               {
-                if (occ)
+                if(occ)
                   a += grid_map_->getResolution();
                 cps_.base_point[j].push_back((a / length) * intersection_point + (1 - a / length) * cps_.points.col(j));
                 //base_point应该是在障碍物表面
                 cps_.direction[j].push_back((intersection_point - cps_.points.col(j)).normalized());
+                //normalized()返回一个Eigen::Vector,norm()是求范数，normalize()是对自己进行归一化操作
                 break;
               }
             }
@@ -429,7 +431,7 @@ namespace ego_planner
       {
         /* evaluate jerk */
         jerk = q.col(i + 3) - 3 * q.col(i + 2) + 3 * q.col(i + 1) - q.col(i);
-        cost += jerk.squaredNorm();
+        cost += jerk.squaredNorm();//squaredNorm()二范数的平方
         temp_j = 2.0 * jerk;
         /* jerk gradient */
         gradient.col(i + 0) += -temp_j;

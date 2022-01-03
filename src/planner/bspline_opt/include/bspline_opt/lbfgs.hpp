@@ -1029,6 +1029,7 @@ namespace lbfgs
                               lbfgs_progress_t proc_progress,
                               void *instance,
                               lbfgs_parameter_t *_param)
+    //int result = lbfgs::lbfgs_optimize(variable_num_, q, &final_cost, BsplineOptimizer::costFunctionRebound, NULL, BsplineOptimizer::earlyExit, this, &lbfgs_params);
     {
         int ret;
         int i, j, k, ls, end, bound;
@@ -1051,11 +1052,13 @@ namespace lbfgs
 
         /* Construct a callback data. */
         callback_data_t cd;
-        cd.n = n;
-        cd.instance = instance;
-        cd.proc_evaluate = proc_evaluate;
-        cd.proc_stepbound = proc_stepbound;
-        cd.proc_progress = proc_progress;
+        cd.n = n;//variable_num_
+        //int start_id = order_;int end_id = this->cps_.size - order_;
+        //variable_num_ = 3 * (end_id - start_id);
+        cd.instance = instance;//this
+        cd.proc_evaluate = proc_evaluate;//BsplineOptimizer::costFunctionRebound
+        cd.proc_stepbound = proc_stepbound;//NULL
+        cd.proc_progress = proc_progress;//BsplineOptimizer::earlyExit
 
         /* Check the input parameters for errors. */
         if (n <= 0)
@@ -1104,7 +1107,7 @@ namespace lbfgs
         }
 
         /* Allocate working space. */
-        xp = (double *)vecalloc(n * sizeof(double));
+        xp = (double *)vecalloc(n * sizeof(double));//n=variable_num_
         g = (double *)vecalloc(n * sizeof(double));
         gp = (double *)vecalloc(n * sizeof(double));
         d = (double *)vecalloc(n * sizeof(double));
@@ -1130,6 +1133,7 @@ namespace lbfgs
 
         /* Evaluate the function value and its gradient. */
         fx = cd.proc_evaluate(cd.instance, x, g, cd.n);
+        //BsplineOptimizer::costFunctionRebound(),计算平滑，避障，动力学可行性所构成的目标函数值，以及函数的梯度
 
         /* Store the initial value of the objective function. */
         if (pf != NULL)
@@ -1146,8 +1150,8 @@ namespace lbfgs
         /*
         Make sure that the initial variables are not a minimizer.
         */
-        vec2norm(&xnorm, x, n);
-        vec2norm(&gnorm, g, n);
+        vec2norm(&xnorm, x, n);//以控制点作为自变量x的二范数的倒数值放在xnorm中
+        vec2norm(&gnorm, g, n);//以控制点作为自变量x所构成的目标函数的梯度的二范数的倒数值放在gnorm中
 
         if (xnorm < 1.0)
             xnorm = 1.0;
