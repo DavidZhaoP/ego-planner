@@ -6,7 +6,8 @@ ADD_COMPILE_OPTIONS(-std=c++11 )
 ADD_COMPILE_OPTIONS(-std=c++14 )
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -Wall -g")
 
-find_package(OpenCV REQUIRED)
+# find_package(OpenCV REQUIRED)
+find_package(OpenCV 3.4.2 REQUIRED)#zp changed
 
 
 find_package(catkin REQUIRED COMPONENTS
@@ -46,4 +47,5 @@ add_library( plan_env
 target_link_libraries( plan_env
     ${catkin_LIBRARIES} 
     ${PCL_LIBRARIES}
+    ${OpenCV_LIBS}
     )  

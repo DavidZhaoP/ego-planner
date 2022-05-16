@@ -14,6 +14,7 @@
 #include <sensor_msgs/PointCloud2.h>
 #include <Eigen/Eigen>
 #include <random>
+#include "pcl/kdtree/impl/kdtree_flann.hpp"
 
 using namespace std;
 

@@ -14,7 +14,8 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   pcl_conversions
 )
-find_package(PCL REQUIRED)
+# find_package(PCL REQUIRED)
+find_package(PCL 1.7 REQUIRED)#zp changed
 find_package(Eigen3 REQUIRED)
 
 catkin_package()
